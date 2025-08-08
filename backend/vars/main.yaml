@@ -1,0 +1,6 @@
+vars_prompt:
+  - name: mysql_root_password
+    prompt: Enter mysql_root_password
+    private: no
+vars:
+  db_host: db.gurudathbn.site

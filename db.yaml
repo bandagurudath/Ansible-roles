@@ -1,0 +1,8 @@
+- name: Configure mysql-server and set root password
+  hosts: db
+  become: yes
+  roles:
+  - db
+  
+  
+  

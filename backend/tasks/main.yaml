@@ -1,0 +1,67 @@
+tasks:
+  - name: Disbale nodejs default version
+    ansible.builtin.command: "dnf module disable nodejs -y"
+
+  - name: Enabling nodejs:20 version
+    ansible.builtin.command: "dnf module enable nodejs:20 -y"
+
+  - name: Install nodejs
+    ansible.builtin.dnf:
+      name: "{{item}}"
+      state: installed
+    loop:
+      - nodejs
+      - mysql
+
+  - name: Check expense user
+    ansible.builtin.command: "id expense"
+    register: id_expense_output
+    ignore_errors: yes
+
+  - name: create expense login_user
+    ansible.builtin.user:
+      user: expense
+
+  - name: create app directory
+    ansible.builtin.file:
+      path: /app
+      state: directory
+
+  - name: unzip the backend file
+    ansible.builtin.unarchive:
+      src: https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip
+      dest: /app
+      remote_src: yes
+
+  - name: install nodejs dependencies
+    ansible.builtin.command: "npm install"
+    args:
+      chdir: /app
+
+  - name: copy backend.service file to systemd
+    ansible.builtin.copy:
+      src: backend.service
+      dest: /etc/systemd/system/backend.service
+    notify: daemon reload
+
+  - name: install pymysql
+    ansible.builtin.pip:
+      name:
+      - pymysql
+      - cryptography
+      executable: pip3.9
+
+  - name: Load data to db
+    community.mysql.mysql_db:
+      login_user: root
+      login_password: "{{mysql_root_password}}"
+      login_host: "{{db_host}}"
+      target: /app/schema/backend.sql
+      state: import
+      name: all
+
+  - name: start and enable backend service
+    ansible.builtin.service:
+      name: backend
+      state: started
+      enabled: yes
