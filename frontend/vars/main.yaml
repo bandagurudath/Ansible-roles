@@ -1,2 +1,1 @@
-vars:
-  backend_host: backend.gurudathbn.site
+backend_host: backend.gurudathbn.site
