@@ -1,6 +1,10 @@
 - name: configure backend server
   hosts: backend
   become: yes
+  vars_prompt:
+  - name: mysql_root_password
+    prompt: Enter mysql_root_password
+    private: no
   roles:
   - backend
   
