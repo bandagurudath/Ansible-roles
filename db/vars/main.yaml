@@ -1,2 +1,1 @@
-vars:
-  login_host: db.gurudathbn.site
+login_host: db.gurudathbn.site
