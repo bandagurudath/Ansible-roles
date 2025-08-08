@@ -1,4 +1,3 @@
-tasks:
   - name: Disbale nodejs default version
     ansible.builtin.command: "dnf module disable nodejs -y"
 
