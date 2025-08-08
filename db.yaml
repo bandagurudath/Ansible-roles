@@ -1,6 +1,10 @@
 - name: Configure mysql-server and set root password
   hosts: db
   become: yes
+  vars_prompt:
+  - name: mysql_root_password
+    prompt: Enter mysql root password
+    private: no
   roles:
   - db
   
